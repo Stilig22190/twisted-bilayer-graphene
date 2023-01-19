@@ -15,17 +15,19 @@ hv     = 2135.4 * a     #meV*angstrom
 N      = 4              #truncate range
 valley = 1              #valley index
 
-I      = complex(0, 1)
+I      = complex(0, 1) #复数
 ei120  = cos(2*pi/3) + valley*I*sin(2*pi/3)
 ei240  = cos(2*pi/3) - valley*I*sin(2*pi/3)
 
 bm=8*np.pi*sin(theta/2)/(a*3)
-G1     = 8*np.pi*sin(theta/2)/(a*sqrt(3))*np.array([-0.5, -np.sqrt(3)/2])
+G1     = 8*np.pi*sin(theta/2)/(a*sqrt(3))*np.array([-0.5, -np.sqrt(3)/2]) #The reciprocal lattice vectors of superlattice basis vector 二维向量
+'''a1=(1/2,sqrt(3)/2)*a,a2=(-1/2,sqrt(3)/2)*a
+    We can find it from https://doi.org/10.1103/PhysRevB.86.155449 below formula(A12) '''
 G2     = 8*np.pi*sin(theta/2)/(a*sqrt(3))*np.array([1, 0])
-K1     = 8*np.pi*sin(theta/2)/(a*3)*array([sqrt(3)/2,-0.5])
+K1     = 8*np.pi*sin(theta/2)/(a*3)*array([sqrt(3)/2,-0.5]) #Dirac point
 K2     = 8*np.pi*sin(theta/2)/(a*3)*array([sqrt(3)/2,0.5])
 
-T1    = np.array([[u0,u1], [u1,u0]], dtype=complex)
+T1    = np.array([[u0,u1], [u1,u0]], dtype=complex) #super-lattice translation matrix
 T2   = np.array([[u0,u1*ei240], [u1*ei120, u0]], dtype=complex)
 T3   = np.array([[u0,u1*ei120], [u1*ei240, u0]], dtype=complex)
 
@@ -101,7 +103,7 @@ def Hamiltonian(kx,ky):
 M_1 = arange(0, 101, 1)
 M_2 = arange(100, 201, 1)
 M_3 = arange(200, 301, 1)
-G_1=array(zeros((len(M_1), 4*waven)))
+G_1=array(zeros((len(M_1), 4*waven))) #指定长度数组
 G_2=array(zeros((len(M_2), 4*waven)))
 G_3=array(zeros((len(M_3), 4*waven)))
 for i in range(0,len(M_1)):
