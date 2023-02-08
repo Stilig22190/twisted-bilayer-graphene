@@ -11,32 +11,35 @@ theta  = 1.05/180.0*np.pi          #degree
 u0     = 79.7           #mev interlayer tunnelling
 u1     = 97.5
 a      = 2.46           #lattice constant
-hv     = 2135.4 * a     #meV*angstrom
+hv     = 2135.4 * a     #meV*angstrom(埃米), Fermi velocity for SLG
 N      = 4              #truncate range
-valley = 1              #valley index
+valley = +1              #+1 for K, -1 for K'
 
 I      = complex(0, 1) #复数
 ei120  = cos(2*pi/3) + valley*I*sin(2*pi/3)
 ei240  = cos(2*pi/3) - valley*I*sin(2*pi/3)
 
-bm=8*np.pi*sin(theta/2)/(a*3)
-G1     = 8*np.pi*sin(theta/2)/(a*sqrt(3))*np.array([-0.5, -np.sqrt(3)/2]) #The reciprocal lattice vectors of superlattice basis vector 二维向量
+bm=8*np.pi*sin(theta/2)/(a*3) #dK的长度
+
+#图可见https://journals.aps.org/prb/abstract/10.1103/PhysRevB.101.195425 的图1(a)
+G1     = 8*np.pi*sin(theta/2)/(a*sqrt(3))*np.array([-0.5, -np.sqrt(3)/2]) #The reciprocal lattice vectors of superlattice basis vector 
 '''a1=(1/2,sqrt(3)/2)*a,a2=(-1/2,sqrt(3)/2)*a
-    We can find it from https://doi.org/10.1103/PhysRevB.86.155449 below formula(A12) '''
-G2     = 8*np.pi*sin(theta/2)/(a*sqrt(3))*np.array([1, 0])
-K1     = 8*np.pi*sin(theta/2)/(a*3)*array([sqrt(3)/2,-0.5]) #Dirac point
+     '''
+G2     = 8*np.pi*sin(theta/2)/(a*sqrt(3))*np.array([1, 0]) 
+K1     = 8*np.pi*sin(theta/2)/(a*3)*array([sqrt(3)/2,-0.5]) 
 K2     = 8*np.pi*sin(theta/2)/(a*3)*array([sqrt(3)/2,0.5])
 
-T1    = np.array([[u0,u1], [u1,u0]], dtype=complex) #super-lattice translation matrix
+
+T1    = np.array([[u0,u1], [u1,u0]], dtype=complex) #matrix
 T2   = np.array([[u0,u1*ei240], [u1*ei120, u0]], dtype=complex)
 T3   = np.array([[u0,u1*ei120], [u1*ei240, u0]], dtype=complex)
 
 
 waven=(2*N+1)**2
 k=0;
-L=np.array(zeros((waven, 2)))
+L=np.array(zeros((waven, 2))) #waven行2列
 
-for i in np.arange(2*N+1):
+for i in np.arange(2*N+1): #[0,..,2*N]
   for j in np.arange(2*N+1):
       L[k,0]=i-N
       L[k,1]=j-N
@@ -53,7 +56,9 @@ def Hamiltonian(kx,ky):
         qy1 = ky -K1[1]+ n1*G1[1] + n2*G2[1]
         qx2 = kx -K2[0]+ n1*G1[0] + n2*G2[0] 
         qy2 = ky -K2[1]+ n1*G1[1] + n2*G2[1] 
-        H[2*i, 2*i+1] = -hv*(valley*qx1 - I*qy1)
+
+        #相当于将各分量上的泡利矩阵与qx1和qy1相乘
+        H[2*i, 2*i+1] = -hv*(valley*qx1 - I*qy1) 
         H[2*i+1, 2*i] = -hv*(valley*qx1 + I*qy1)
         H[2*i+2*waven, 2*i+2*waven+1] =  -hv*(valley*qx2-I*qy2)
         H[2*i+2*waven+1, 2*i+2*waven] =  -hv*(valley*qx2+I*qy2)
@@ -94,16 +99,16 @@ def Hamiltonian(kx,ky):
 
 
                 
-    eigenvalue,featurevector=np.linalg.eig(H)
-    eig_vals_sorted = np.sort(eigenvalue)
-    eig_vecs_sorted = featurevector[:,eigenvalue.argsort()]
+    eigenvalue,featurevector=np.linalg.eig(H) #返回特征值，特征向量
+    eig_vals_sorted = np.sort(eigenvalue) #数组按行排序
+    eig_vecs_sorted = featurevector[:,eigenvalue.argsort()] #将eigenvalue中的元素从小到大排列，提取其对应的index(索引)，然后返回index数组
     e=eig_vals_sorted
     return e
 #plot bands
 M_1 = arange(0, 101, 1)
 M_2 = arange(100, 201, 1)
 M_3 = arange(200, 301, 1)
-G_1=array(zeros((len(M_1), 4*waven))) #指定长度数组
+G_1=array(zeros((len(M_1), 4*waven))) #指定长度数组(M_1lenth,4*waven)matrix,且这里的G_1与上G1无关
 G_2=array(zeros((len(M_2), 4*waven)))
 G_3=array(zeros((len(M_3), 4*waven)))
 for i in range(0,len(M_1)):
@@ -112,7 +117,7 @@ for i in range(0,len(M_1)):
     G_3[i]=real(Hamiltonian(bm*sqrt(3)/2, -bm*(M_3[i]-200)/200))
 
 for j in range(0,4*waven):
-    plt.plot(M_1,G_1[:,j],linestyle="-",color="b", linewidth=0.6)
+    plt.plot(M_1,G_1[:,j],linestyle="-",color="b", linewidth=0.6) #即 m[:,j]相当于 m[0:len(M_1),j],matrix的第j列
     plt.plot(M_2,G_2[:,j],linestyle="-",color="b", linewidth=0.6)
     plt.plot(M_3,G_3[:,j],linestyle="-",color="b", linewidth=0.6)
 
