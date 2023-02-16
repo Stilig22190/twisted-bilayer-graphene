@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 #define constant
-theta  = 1.05/180.0*np.pi          #degree
+theta  = 1.12/180.0*np.pi          #degree
 u0     = 79.7           #mev interlayer tunnelling
 u1     = 97.5
 a      = 2.46           #lattice constant
@@ -21,10 +21,7 @@ ei240  = cos(2*pi/3) - valley*I*sin(2*pi/3)
 
 bm=8*np.pi*sin(theta/2)/(a*3) #dK的长度
 
-#图可见https://journals.aps.org/prb/abstract/10.1103/PhysRevB.101.195425 的图1(a)
 G1     = 8*np.pi*sin(theta/2)/(a*sqrt(3))*np.array([-0.5, -np.sqrt(3)/2]) #The reciprocal lattice vectors of superlattice basis vector 
-'''a1=(1/2,sqrt(3)/2)*a,a2=(-1/2,sqrt(3)/2)*a
-     '''
 G2     = 8*np.pi*sin(theta/2)/(a*sqrt(3))*np.array([1, 0]) 
 K1     = 8*np.pi*sin(theta/2)/(a*3)*array([sqrt(3)/2,-0.5]) 
 K2     = 8*np.pi*sin(theta/2)/(a*3)*array([sqrt(3)/2,0.5])

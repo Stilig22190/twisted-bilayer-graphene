@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 #define constant
-theta  = 1.05        #degree
+theta  = 1.12        #degree
 omega  = 110.7          #mev
 d      = 1.420          #angstrom(埃米), whatever is ok. (lattice constant/sqrt(3))
 hv     = 1.5*d*2970     #meV*angstrom, Fermi velocity for SLG
