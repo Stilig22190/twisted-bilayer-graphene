@@ -45,7 +45,9 @@ for d=1:301
  km=k(:,d)*bm;
  for i=1:waven
    g=G(i,:);
-   kvec1=Rot2*(km-K1+g(1)*G1M+g(2)*G2M);kvec2=Rot1*(km-K2+g(1)*G1M+g(2)*G2M);
+   kvec1=Rot2*(km-K1+g(1)*G1M+g(2)*G2M);
+   kvec2=Rot1*(km-K2+g(1)*G1M+g(2)*G2M);
+   % note that effection of Delta
    H1(2*i-1:2*i,2*i-1:2*i)=-vf*(kvec1(1)*valley*sx+kvec1(2)*sy)+Delta*sz;
    H2(2*i-1:2*i,2*i-1:2*i)=-vf*(kvec2(1)*valley*sx+kvec2(2)*sy); 
    for j=1:waven
@@ -75,9 +77,9 @@ for i=waven*2-10:waven*2+10
     set(gca,'xticklabel',[])
     box on
 end
-axis([0 301 -80 100]);
+axis([0 301 -300 300]);
 set(gca,'XTick',0:100:300);
-set(gca,'YTick',-80:20:100);
+set(gca,'YTick',-500:20:500);
 set(gca,'XTickLabel',{'K_+^m';'\Gamma^m';'M^m';'K_-^m'});
 hold on 
 plot([100 100],[-200 200],'--','LineWidth',0.9,'Color','k');

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 #define constant
-theta  = 1.05/180.0*np.pi          #degree
+theta  = 0/180.0*np.pi          #degree
 omega  = 110.7          #mev
 a      = 2.46          #angstrom(埃米)(lattice constant)
 hv     = 1.5*a/sqrt(3)*2970     #meV*angstrom, Fermi velocity for SLG
@@ -74,6 +74,11 @@ def Hamiltonian(kx,ky):
         qx2 = kx -K2[0]+ n1*G1[0] + n2*G2[0] 
         qy2 = ky -K2[1]+ n1*G1[1] + n2*G2[1] 
 
+        qx1 = cos(theta/2) * qx1 + sin(theta/2) * qy1 #小角度时qx=ax，qy=ay
+        qy1 =-sin(theta/2) * qx1 + cos(theta/2) * qy1 #可见https://journals.aps.org/prb/abstract/10.1103/PhysRevB.105.165422
+        qx2 = cos(theta/2) * qx2 + sin(theta/2) * qy2
+        qy2 =-sin(theta/2) * qx2 + cos(theta/2) * qy2
+
         #相当于将各分量上的泡利矩阵与qx1和qy1相乘
         H[2*i, 2*i+1] = -hv*(valley*qx1 - I*qy1) 
         H[2*i+1, 2*i] = -hv*(valley*qx1 + I*qy1)
@@ -139,10 +144,10 @@ for j in range(0,4*waven):
     plt.plot(M_3,G_3[:,j],linestyle="-",color="b", linewidth=0.6)
 
 plt.xlim(0,301)
-plt.ylim(-200,200)
+plt.ylim(-100,100)
 plt.yticks(np.arange(-50, 75, step=25))
 positions = (0,100,200,300)
-labels = ("$K_+^m$","$\Gamma^m$","$M^m$","$K_-^m$")
+labels = ("$K$","$\Gamma$","$M$","$K'$")
 plt.xticks(positions, labels)
 plt.ylabel("E(meV)")
 plt.axvline(x=101,color='gray',linestyle='--',linewidth=0.5)

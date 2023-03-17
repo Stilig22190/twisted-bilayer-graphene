@@ -62,7 +62,7 @@ def Hamiltonian(kx, ky):
         ay = ky - valley*K1[1] + ix*b1m[1] + iy*b2m[1]
 
         qx = cos(theta/2) * ax + sin(theta/2) * ay #小角度时qx=ax，qy=ay
-        qy =-sin(theta/2) * ax + cos(theta/2) * ay
+        qy =-sin(theta/2) * ax + cos(theta/2) * ay 
          
         H[2*i, 2*i+1] = hv * (valley*qx - I*qy)
         H[2*i+1, 2*i] = hv * (valley*qx + I*qy)

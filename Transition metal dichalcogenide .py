@@ -92,7 +92,7 @@ Eigen = np.zeros((len(KX),siteN))
 for k in range(len(KX)):
     Eigen[k,:] = SolvHamiltonian(KX[k], KY[k])
 plt.plot(np.linspace(0,1,len(KX)),Eigen,'b-')
-plt.ylim(-0.060,0.020)
+plt.ylim(-0.2,0.2)
 #plt.xlim(0,1)
 #plt.xticks([])
 #plt.vlines(1/5,0,0.025,color = "k")

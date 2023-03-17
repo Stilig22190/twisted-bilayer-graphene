@@ -1,5 +1,6 @@
 '''
  This is for continuum model moire bands of Twisted bilayer graphene
+ 中文可参考https://zhuanlan.zhihu.com/p/442528883
 '''
 
 from numpy import *
@@ -27,7 +28,7 @@ K1     = 8*np.pi*sin(theta/2)/(a*3)*array([sqrt(3)/2,-0.5])
 K2     = 8*np.pi*sin(theta/2)/(a*3)*array([sqrt(3)/2,0.5])
 
 
-T1    = np.array([[u0,u1], [u1,u0]], dtype=complex) #matrix
+T1    = np.array([[u0,u1], [u1,u0]], dtype=complex) #matrix 注意对角元于非对角元的区别为AA hoping与AB hoping的区别
 T2   = np.array([[u0,u1*ei240], [u1*ei120, u0]], dtype=complex)
 T3   = np.array([[u0,u1*ei120], [u1*ei240, u0]], dtype=complex)
 
