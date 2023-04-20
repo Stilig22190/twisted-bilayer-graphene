@@ -1,6 +1,6 @@
 '''
  This is for continuum model moire bands of Bi/SnSe.
- Figture comes form https://doi.org/10.1103/PhysRevB.105.165422
+ Figure comes form https://doi.org/10.1103/PhysRevB.105.165422
 
 '''
 
@@ -9,45 +9,45 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 #define constant
-theta   = 0/180.0*np.pi          #degree
-a_t     = 4.3
-a_b     = 4.5    #angstrom(埃米)(lattice constant)
-
+theta   =0/180.0*np.pi          #degree
+a_t     = 4.5
+a_b     = 4.2   #angstrom(埃米)(lattice constant)
+I      = complex(0, 1) #复数
 Delta   =(a_b-a_t)/a_t
 a_m     =a_b/(sqrt(Delta**2+2*(1-cos(theta))))
 N       = 4            #truncate range
-valley  = +1      
-t_t     =1100        #mev
-t_b     =1000
+valley  =1      
+t_t     =800#mev
+t_b     =900
 hv_t    =a_t*t_t
 hv_b    =a_b*t_b
-delta_t =800/2     #mev
-delta_b =0 
-w1      = 80       #mev
-w2      =80
-
+delta_t =0     #mev
+delta_b =900/2
+w1      =80  #mev
+w2      =80 
+w2D     =w2.conjugate() 
 
                                              
 
-I      = complex(0, 1) #复数
-ei45  = cos(pi/4) + I*sin(pi/4)
-ei90  = cos(2*pi/4) + I*sin(2*pi/4)
-ei135 = cos(3*pi/4) + I*sin(3*pi/4)
-ei_45  = cos(-pi/4) + I*sin(-pi/4)
-ei_90  = cos(-2*pi/4) + I*sin(-2*pi/4)
-ei_135  = cos(-3*pi/4) + I*sin(-3*pi/4)
+
+ei90  = cos(pi/2) + valley*I*sin(pi/2)
+ei180  = cos(pi) + valley*I*sin(pi)
+ei270 = cos(3*pi/2) + valley*I*sin(3*pi/2)
+ei_90  = cos(-pi/2) + valley*I*sin(-pi/2)
+ei_180  = cos(-pi) + valley*I*sin(-pi)
+ei_270  = cos(-3*pi/2) + valley*I*sin(-3*pi/2)
 
 
-G1     = 2*np.pi/(a_m)*np.array([1, 0]) #The reciprocal lattice vectors of superlattice basis vector
-G2     = 2*np.pi/(a_m)*np.array([0, 1]) 
+G1     = 2*np.pi/(a_m)*np.array([sqrt(2)/2, sqrt(2)/2]) #The reciprocal lattice vectors of superlattice basis vector
+G2     = 2*np.pi/(a_m)*np.array([-sqrt(2)/2,sqrt(2)/2]) 
 bm     = 2*np.pi/(a_m)
-K1     = np.pi/(a_m)*array([1,1]) 
-K2     = np.pi/(a_m)*array([1,-1]) 
+K1     = valley*np.pi/(a_m)*array([sqrt(2)/2, -sqrt(2)/2]) 
+K2     = valley*np.pi/(a_m)*array([sqrt(2)/2, sqrt(2)/2]) 
 
-T1    = np.array([[w1,w2], [w2,w1]], dtype=complex)  
-T2   = np.array([[w1, w2*ei_45], [w2*ei45, w1]], dtype=complex)
-T3   = np.array([[w1, w2*ei_90], [w2*ei90, w1]], dtype=complex)
-T4   = np.array([[w1, w2*ei_135], [w2*ei135, w1]], dtype=complex)
+T1    = np.array([[w1,w2D], [w2,w1]], dtype=complex)  
+T2   = np.array([[w1, w2D*ei_90], [w2*ei90, w1]], dtype=complex)
+T3   = np.array([[w1, w2D*ei_180], [w2*ei180, w1]], dtype=complex)
+T4   = np.array([[w1, w2D*ei_270], [w2*ei270, w1]], dtype=complex)
 T1D   = np.array(np.matrix(T1).H) #共轭转置
 T2D   = np.array(np.matrix(T2).H) 
 T3D   = np.array(np.matrix(T3).H)
@@ -110,7 +110,7 @@ def Hamiltonian(kx,ky):
                 H[2*j+2*waven+1,2*i]    = T2D[1, 0]
                 H[2*j+2*waven+1,2*i+1]  = T2D[1, 1]
             
-            if (m1==n1 and m2-n2==-valley):
+            if (m1-n1==-valley and m2-n2==-valley):
                 H[2*i, 2*j+2*waven]    = T3[0, 0]
                 H[2*i, 2*j+2*waven+1]   = T3[0, 1]
                 H[2*i+1, 2*j+2*waven]   = T3[1, 0]
@@ -121,7 +121,7 @@ def Hamiltonian(kx,ky):
                 H[2*j+2*waven+1,2*i]    = T3D[1, 0]
                 H[2*j+2*waven+1,2*i+1]  = T3D[1, 1]
 
-            if (m1-n1==-valley and m2-n2==-valley):
+            if (m1==n1 and m2-n2==-valley):
                 H[2*i, 2*j+2*waven]     = T4[0, 0]
                 H[2*i, 2*j+2*waven+1]   = T4[0, 1]
                 H[2*i+1, 2*j+2*waven]   = T4[1, 0]
@@ -150,9 +150,9 @@ G_3=array(zeros((len(M_3), 4*waven)))
 for i in range(0,len(M_1)):    
     #算能带结构,就是算高对称点上的连线上的能级结构(即:不可约布里渊区的边界）
 
-    G_1[i]=real(Hamiltonian(bm/2*(M_1[i])/100,  0))
-    G_2[i]=real(Hamiltonian(bm/2,  bm/2*(M_2[i]-100)/100))
-    G_3[i]=real(Hamiltonian(bm/2*(300-M_3[i])/100,bm/2*(300-M_3[i])/100))
+    G_1[i]=real(Hamiltonian(bm/2*sqrt(2)/2*(M_1[i])/100,  bm/2*sqrt(2)/2*(M_1[i])/100))
+    G_2[i]=real(Hamiltonian(bm/2*sqrt(2)/2*(M_2[i])/100,  bm/2*sqrt(2)/2*(200-M_2[i])/100))
+    G_3[i]=real(Hamiltonian(bm/2*sqrt(2)*(300-M_3[i])/100,0))
 
 for j in range(0,4*waven):
     if(j%4==1):
@@ -174,7 +174,7 @@ for j in range(0,4*waven):
 
 
 plt.xlim(0,301)
-plt.ylim(-100,100)
+plt.ylim(-500,500)
 #plt.yticks(np.arange(-50, 75, step=25))
 positions = (0,100,200,300)
 labels = ("$\Gamma$","$X$","$M$","$\Gamma$")

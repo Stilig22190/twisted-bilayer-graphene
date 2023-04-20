@@ -13,7 +13,7 @@ omega  = 110.7          #mev
 d      = 1.420          #angstrom(埃米), whatever is ok. (lattice constant/sqrt(3))
 hv     = 1.5*d*2970     #meV*angstrom, Fermi velocity for SLG
 N      = 5              #truncate range
-valley = +1             #+1 for K, -1 for K'
+valley = 1             #+1 for K, -1 for K'
 KDens  = 100            #density of k points, 100 is good.
 
 #tune parameters

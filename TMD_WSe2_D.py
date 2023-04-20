@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 #define constant
-theta   = 0.8/180.0*np.pi          #degree    
+theta   = 5.08/180.0*np.pi          #degree    
 a_t     = 3.317   #angstrom(埃米)(lattice constant)
 a_b     = 3.317
 Delta   =(a_b-a_t)/a_t
@@ -24,20 +24,20 @@ valley  = +1
                                              
 
 I      = complex(0, 1) #复数
-ei120  = cos(2*pi/3) + I*sin(2*pi/3)
-ei240  = cos(2*pi/3) - I*sin(2*pi/3)
+ei120  = cos(2*pi/3) +valley*I*sin(2*pi/3)
+ei240  = cos(2*pi/3) - valley*I*sin(2*pi/3)
 
 
 G1     = 4*np.pi/(a_m*sqrt(3))*np.array([-0.5, -sqrt(3)/2]) #The reciprocal lattice vectors of superlattice basis vector
 G2     = 4*np.pi/(a_m*sqrt(3))*np.array([1, 0]) 
 bm     = 4*np.pi/(a_m*3)
-K1     = 4*np.pi/(a_m*3)*array([sqrt(3)/2,0.5]) 
-K2     = 4*np.pi/(a_m*3)*array([sqrt(3)/2,-0.5]) 
+K1     =valley* 4*np.pi/(a_m*3)*array([sqrt(3)/2,-0.5]) 
+K2     = valley*4*np.pi/(a_m*3)*array([sqrt(3)/2,0.5]) 
 
 
 T1    = t*np.array([[1,1], [1,1]], dtype=complex)  
-T2   = t*np.array([[ei120, 1], [ei240, ei120]], dtype=complex)
-T3   = t*np.array([[ei240, 1], [ei120, ei240]], dtype=complex)
+T2   = t*np.array([[1, 1], [1, 1]], dtype=complex)
+T3   = t*np.array([[1, 1], [1, 1]], dtype=complex)
 T1D   = np.array(np.matrix(T1).H) #共轭转置
 T2D   = np.array(np.matrix(T2).H) 
 T3D   = np.array(np.matrix(T3).H)
@@ -149,7 +149,7 @@ for j in range(0,4*waven):
         plt.plot(M_2,G_2[:,j],linestyle="-",color="green", linewidth=0.6)
         plt.plot(M_3,G_3[:,j],linestyle="-",color="green", linewidth=0.6)
 plt.xlim(0,251)
-plt.ylim(-813,-673)
+plt.ylim(-940,-780)
 #plt.yticks(np.arange(-50, 75, step=25))
 positions = (0,100,150,250)
 labels = ("$\Gamma$","$K$","$M$","$\Gamma$")

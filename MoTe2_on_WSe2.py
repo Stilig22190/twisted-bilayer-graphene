@@ -11,38 +11,40 @@ import numpy as np
 #define constant
 theta   = 4/180.0*np.pi          #degree
 W       = 1.3*10**(-3)         #ev
-a_b     = 3.575*10**(-10)      #m
-a_t     =  3.32*10**(-10)
+a_t     = 3.575*10**(-10)      #m
+a_b     =  3.32*10**(-10)
 Delta   =(a_b-a_t)/a_t
 a_m     =a_b/(sqrt(Delta**2+theta**2))
 E_g     =36.8*10**(-3)         #ev
 m0      =0.51099895 * 10**(6)  
-m_b     =0.65*m0
-m_t     =0.35*m0
+m_t     =0.65*m0
+m_b     =0.35*m0
 hbar    = 4.135667 * 10**(-15)/2/pi
 N       = 4            #truncate range
-valley  = +1      
-V_b     =4.1*10**(-3)          #ev
-psi_b   =14/180.0*np.pi  
-kin_b = -hbar**2/2/m_b *9*10**(16)
-kin_t = -hbar**2/2/m_t *9*10**(16)
+valley  = 1           #-1 for -K,1 for K    
+V_t     =4.1*10**(-3)          #ev
+psi_t   =14/180.0*np.pi  
+kin_t = -hbar**2/2/m_b *9*10**(16)
+kin_b = -hbar**2/2/m_t *9*10**(16)
 
                                              
 
 I      = complex(0, 1) #复数
-ei120  = cos(2*pi/3) + I*sin(2*pi/3)
-ei240  = cos(2*pi/3) - I*sin(2*pi/3)
+ei120  = cos(2*pi/3) + valley*I*sin(2*pi/3)
+ei240  = cos(2*pi/3) - valley*I*sin(2*pi/3)
+
 
 
 G1     = 4*np.pi/(a_m*sqrt(3))*np.array([-0.5, -sqrt(3)/2]) #The reciprocal lattice vectors of superlattice basis vector
 G2     = 4*np.pi/(a_m*sqrt(3))*np.array([1, 0]) 
 bm     = 4*np.pi/(a_m*3)
-K1     = 4*np.pi/(a_m*3)*array([sqrt(3)/2,0.5]) 
-K2     = 4*np.pi/(a_m*3)*array([sqrt(3)/2,-0.5]) 
+
+K1     =valley*4*np.pi/(a_m*3)*array([sqrt(3)/2,-0.5]) 
+K2     =valley*4*np.pi/(a_m*3)*array([sqrt(3)/2,0.5]) 
 
 T1D    = W
-T2D   = W*ei240
-T3D   = W*ei120 
+T2D   = W*ei120
+T3D   = W*ei240 
 T1   =T1D.conjugate()  #共轭
 T2   = T2D.conjugate() 
 T3   = T3D.conjugate()
@@ -69,8 +71,8 @@ def Hamiltonian(kx,ky):
         qx2 = kx -K2[0]+ n1*G1[0] + n2*G2[0] 
         qy2 = ky -K2[1]+ n1*G1[1] + n2*G2[1] 
 
-        H[i, i] =kin_b *(qx1**2+qy1**2)
-        H[i+waven, i+waven] = kin_t*(qx2**2+qy2**2)-E_g 
+        H[i, i] =kin_t *(qx1**2+qy1**2)-E_g 
+        H[i+waven, i+waven] = kin_b*(qx2**2+qy2**2)
         for j in np.arange(0,waven):
             m1 = L[j, 0]
             m2 = L[j, 1]
@@ -80,16 +82,21 @@ def Hamiltonian(kx,ky):
             if (m1-n1==-valley and m2==n2):
                 H[i, j+waven]    = T2
                 H[j+waven, i]     = T2D
-                H[i,j]=V_b*exp(-I*psi_b)
-                H[j,i]=V_b*exp(I*psi_b)
             if (m1-n1==-valley and m2-n2==-valley):
                 H[i, j+waven]     = T3
                 H[j+waven, i]     = T3D
-                H[i,j]=V_b*exp(-I*psi_b)
-                H[j,i]=V_b*exp(I*psi_b)
-            if (m1==n1 and m2-n2==-valley):
-                H[i,j]=V_b*exp(-I*psi_b)
-                H[j,i]=V_b*exp(I*psi_b)
+            if (m1-n1==1 and m2==n2):
+                H[i+waven,j+waven]=V_t*exp(-I*psi_t)
+            if (m1-n1==-1 and m2==n2):
+                H[i+waven,j+waven]=V_t*exp(I*psi_t)
+            if (m1-n1==1 and m2-n2==1):
+                H[i+waven,j+waven]=V_t*exp(-I*psi_t)
+            if (m1-n1==-1 and m2-n2==-1):
+                H[i+waven,j+waven]=V_t*exp(I*psi_t)
+            if (m1==n1 and m2-n2==1):
+                H[i+waven,j+waven]=V_t*exp(-I*psi_t)
+            if (m1==n1 and m2-n2==-1):
+                H[i+waven,j+waven]=V_t*exp(I*psi_t)
   
 
 

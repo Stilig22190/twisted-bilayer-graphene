@@ -8,13 +8,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 #define constant
-theta  = 1.12/180.0*np.pi          #degree
+theta  = 1.05/180.0*np.pi          #degree
 u0     = 79.7           #mev interlayer tunnelling
 u1     = 97.5
 a      = 2.46           #lattice constant
 hv     = 2135.4 * a     #meV*angstrom(埃米), Fermi velocity for SLG
 N      = 4              #truncate range
-valley = +1              #+1 for K, -1 for K'
+valley = +1              #+1 for K, -1 for -K
 
 I      = complex(0, 1) #复数
 ei120  = cos(2*pi/3) + valley*I*sin(2*pi/3)

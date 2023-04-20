@@ -7,12 +7,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 #define constant
-theta  = 0/180.0*np.pi          #degree
+theta  = 1.05/180.0*np.pi          #degree
 omega  = 110.7          #mev
 a      = 2.46          #angstrom(埃米)(lattice constant)
 hv     = 1.5*a/sqrt(3)*2970     #meV*angstrom, Fermi velocity for SLG
 N      = 4            #truncate range
-valley = +1              #+1 for K, -1 for K'
+valley = +1              #+1 for K, -1 for -K
 
 I      = complex(0, 1) #复数
 ei120  = cos(2*pi/3) + valley*I*sin(2*pi/3)
@@ -42,8 +42,8 @@ G2     = 8*np.pi*sin(theta/2)/(a*sqrt(3))*np.array([1, 0])
    so we can say k is near K and k_theta is near K_theta.
    So K1-K2=k-k_theta=dK, i.e. |K1-K2|=bm
 '''
-K1     = 8*np.pi*sin(theta/2)/(a*3)*array([sqrt(3)/2,-0.5]) 
-K2     = 8*np.pi*sin(theta/2)/(a*3)*array([sqrt(3)/2,0.5])
+K1     = valley*8*np.pi*sin(theta/2)/(a*3)*array([sqrt(3)/2,-0.5]) 
+K2     = valley*8*np.pi*sin(theta/2)/(a*3)*array([sqrt(3)/2,0.5])
 
 T1    = omega*np.array([[1,1], [1,1]], dtype=complex) #It is Table 1 in https://link.aps.org/doi/10.1103/PhysRevB.86.155449 reference, when G=0
 T2   = omega*np.array([[ei120, 1], [ei240, ei120]], dtype=complex)
@@ -80,10 +80,10 @@ def Hamiltonian(kx,ky):
         qy2 =-sin(theta/2) * qx2 + cos(theta/2) * qy2
 
         #相当于将各分量上的泡利矩阵与qx1和qy1相乘
-        H[2*i, 2*i+1] = -hv*(valley*qx1 - I*qy1) 
-        H[2*i+1, 2*i] = -hv*(valley*qx1 + I*qy1)
-        H[2*i+2*waven, 2*i+2*waven+1] =  -hv*(valley*qx2-I*qy2)
-        H[2*i+2*waven+1, 2*i+2*waven] =  -hv*(valley*qx2+I*qy2)
+        H[2*i, 2*i+1] = hv*(valley*qx1 - I*qy1) 
+        H[2*i+1, 2*i] = hv*(valley*qx1 + I*qy1)
+        H[2*i+2*waven, 2*i+2*waven+1] =  hv*(valley*qx2-I*qy2)
+        H[2*i+2*waven+1, 2*i+2*waven] =  hv*(valley*qx2+I*qy2)
         for j in np.arange(0,waven):
             m1 = L[j, 0]
             m2 = L[j, 1]
@@ -145,7 +145,6 @@ for j in range(0,4*waven):
 
 plt.xlim(0,301)
 plt.ylim(-100,100)
-plt.yticks(np.arange(-50, 75, step=25))
 positions = (0,100,200,300)
 labels = ("$K$","$\Gamma$","$M$","$K'$")
 plt.xticks(positions, labels)

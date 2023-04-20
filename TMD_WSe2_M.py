@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 #define constant
-theta   = 5.08/180.0*np.pi          #degree
+theta   = 2.5/180.0*np.pi          #degree
 W       = 18*10**(-3)         #ev
 a_b     = 3.317 *10**(-10)      #m
 a_t     =  3.317 *10**(-10)
@@ -28,15 +28,15 @@ kin_t = -hbar**2/2/m_t *9*10**(16)
                                              
 
 I      = complex(0, 1) #复数
-ei120  = cos(2*pi/3) + I*sin(2*pi/3)
-ei240  = cos(2*pi/3) - I*sin(2*pi/3)
+ei120  = cos(2*pi/3) + valley*I*sin(2*pi/3)
+ei240  = cos(2*pi/3) - valley*I*sin(2*pi/3)
 
 
 G1     = 4*np.pi/(a_m*sqrt(3))*np.array([-0.5, -sqrt(3)/2]) #The reciprocal lattice vectors of superlattice basis vector
 G2     = 4*np.pi/(a_m*sqrt(3))*np.array([1, 0]) 
 bm     = 4*np.pi/(a_m*3)
-K1     = 4*np.pi/(a_m*3)*array([sqrt(3)/2,0.5]) 
-K2     = 4*np.pi/(a_m*3)*array([sqrt(3)/2,-0.5]) 
+K1     = valley*4*np.pi/(a_m*3)*array([sqrt(3)/2,-0.5]) 
+K2     = valley*4*np.pi/(a_m*3)*array([sqrt(3)/2,0.5]) 
 
 T1D    = W
 T2D   = W
@@ -72,32 +72,36 @@ def Hamiltonian(kx,ky):
         for j in np.arange(0,waven):
             m1 = L[j, 0]
             m2 = L[j, 1]
+            #层间项
             if (i == j):
                 H[i, j+waven]     = T1
                 H[j+waven, i]     = T1D
-            if (m1-n1==-valley and m2==n2):
+            if (m1-n1==-valley and m2-n2==0):
                 H[i, j+waven]    = T2
                 H[j+waven, i]     = T2D
-                H[i,j]=V*exp(-I*psi)
-                H[j,i]=V*exp(I*psi)
-                H[i+waven,j+waven]=V*exp(-I*psi)
-                H[j+waven,i+waven]=V*exp(I*psi)
             if (m1-n1==-valley and m2-n2==-valley):
                 H[i, j+waven]     = T3
                 H[j+waven, i]     = T3D
-                H[i,j]=V*exp(-I*psi)
-                H[j,i]=V*exp(I*psi)
+            #周期势
+            if (m1-n1==1 and m2==n2):
+                H[i,j]=V*exp(-I*psi)               
                 H[i+waven,j+waven]=V*exp(-I*psi)
-                H[j+waven,i+waven]=V*exp(I*psi)
-            if (m1==n1 and m2-n2==-valley):
+            if (m1-n1==-1 and m2==n2):
+                H[i,j]=V*exp(I*psi)
+                H[i+waven,j+waven]=V*exp(I*psi)
+            if (m1-n1==1 and m2-n2==1):
                 H[i,j]=V*exp(-I*psi)
-                H[j,i]=V*exp(I*psi)
                 H[i+waven,j+waven]=V*exp(-I*psi)
-                H[j+waven,i+waven]=V*exp(I*psi)
+            if (m1-n1==-1 and m2-n2==-1):
+                H[i,j]=V*exp(I*psi)
+                H[i+waven,j+waven]=V*exp(I*psi)
+            if (m1==n1 and m2-n2==1):
+                H[i,j]=V*exp(-I*psi)
+                H[i+waven,j+waven]=V*exp(-I*psi)
+            if (m1==n1 and m2-n2==-1):
+                H[i,j]=V*exp(I*psi)
+                H[i+waven,j+waven]=V*exp(I*psi)
   
-
-
-                
     eigenvalue,featurevector=np.linalg.eig(H) #返回特征值，特征向量
     eig_vals_sorted = np.sort(eigenvalue) #数组按行排序
     #eig_vecs_sorted = featurevector[:,eigenvalue.argsort()] #将eigenvalue中的元素从小到大排列，提取其对应的index(索引)，然后返回index数组
@@ -113,10 +117,10 @@ G_3=array(zeros((len(M_3), 2*waven)))
 
 for i in range(0,len(M_1)):    
     #算能带结构,就是算高对称点上的连线上的能级结构(即:不可约布里渊区的边界）
-    G_1[i]=real(Hamiltonian(bm*sqrt(3)/2*M_1[i]/100, bm/2*M_1[i]/100)) 
-    G_3[i]=real(Hamiltonian(-bm*sqrt(3)/2*(M_3[i]-250)/100, 0)) 
+    G_1[i]=real(Hamiltonian(bm*sqrt(3)/2*M_1[i]/100, bm/2*M_1[i]/100))*1000 
+    G_3[i]=real(Hamiltonian(-bm*sqrt(3)/2*(M_3[i]-250)/100, 0))*1000 
 for i in range(0,len(M_2)):  
-    G_2[i]=real(Hamiltonian(bm*sqrt(3)/2, -bm/2*(M_2[i]-150)/50)) 
+    G_2[i]=real(Hamiltonian(bm*sqrt(3)/2, -bm/2*(M_2[i]-150)/50))*1000 
 
 for j in range(0,2*waven):
     if(j%4==1):
@@ -136,12 +140,12 @@ for j in range(0,2*waven):
         plt.plot(M_2,G_2[:,j],linestyle="-",color="green", linewidth=0.6)
         plt.plot(M_3,G_3[:,j],linestyle="-",color="green", linewidth=0.6)
 plt.xlim(0,251)
-plt.ylim(-0.1,0.02)
+plt.ylim(-150,20)
 #plt.yticks(np.arange(-50, 75, step=25))
 positions = (0,100,150,250)
 labels = ("$\Gamma$","$K$","$M$","$\Gamma$")
 plt.xticks(positions, labels)
-plt.ylabel("E(eV)")
+plt.ylabel("E(meV)")
 plt.axvline(x=101,color='gray',linestyle='--',linewidth=0.5)
 plt.axvline(x=151,color='gray',linestyle='--',linewidth=0.5)
 plt.axvline(x=251,color='gray',linestyle='--',linewidth=0.5)
